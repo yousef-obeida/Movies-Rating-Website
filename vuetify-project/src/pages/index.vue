@@ -1,9 +1,9 @@
 <template>
   <v-img
-    src="../../public/HomeWallpaper.jpg"
-    cover
     class="fill-height"
+    cover
     height="100vh"
+    src="../../public/HomeWallpaper.jpg"
   >
     <div class="d-flex flex-column justify-center align-center h-100 w-100 bg-black-overlay">
       <v-container class="text-center">
@@ -12,18 +12,26 @@
           Discover and share your favorite movies with our vibrant community. Explore reviews, ratings, and recommendations to find your next cinematic adventure
         </p>
 
-        <v-btn to="/register"
-          variant="outlined" 
-          color="white" 
-          size="large" 
-          rounded="pill" 
+        <v-btn
           class="mb-10 px-8 font-weight-bold"
+          color="white"
+          rounded="pill"
+          size="large"
+          to="/register"
+          variant="outlined"
         >
           Login as an admin
         </v-btn>
 
         <v-row class="mt-10">
-          <v-col v-for="stat in stats" :key="stat.name" cols="10" sm="5" lg="2" class="mx-auto mb-6">
+          <v-col
+            v-for="stat in stats"
+            :key="stat.name"
+            class="mx-auto mb-6"
+            cols="10"
+            lg="2"
+            sm="5"
+          >
             <div class="text-subtitle-1 text-grey-lighten-3 mb-1">{{ stat.name }}</div>
             <div class="text-h3 font-weight-bold text-white">{{ stat.value }}</div>
           </v-col>
@@ -33,16 +41,16 @@
   </v-img>
 </template>
 
+<script setup>
+  const stats = [
+    { name: 'Movies', value: '300+' },
+    { name: 'TV shows', value: '200+' },
+    { name: 'Ratings', value: 'Unlimited' },
+  ]
+</script>
+
 <style scoped>
 .bg-black-overlay {
   background: rgba(0, 0, 0, 0.4);
 }
 </style>
-
-<script setup>
-const stats = [
-  { name: 'Movies', value: '300+' },
-  { name: 'TV shows', value: '200+' },
-  { name: 'Ratings', value: 'Unlimited'}
-]
-</script>

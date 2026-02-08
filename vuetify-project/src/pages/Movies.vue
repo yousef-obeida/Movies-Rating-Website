@@ -10,55 +10,64 @@
 
       <!-- Filter Bar -->
       <div class="d-flex justify-space-between align-center mb-6 pt-4 pb-4 border-b border-grey-darken-3">
-         <!-- Sort (Left) -->
+        <!-- Sort (Left) -->
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template #activator="{ props }">
             <v-btn
               v-bind="props"
-              variant="text"
-              color="grey-lighten-1"
               class="text-none font-weight-regular px-2"
+              color="grey-lighten-1"
+              variant="text"
             >
               Sort
               <v-icon end size="small">mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list>
-            <v-list-item v-for="item in sortOptions" :key="item" :value="item" link>
+            <v-list-item v-for="item in sortOptions" :key="item" link :value="item" @click="sortBy = item">
               <v-list-item-title>{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
 
-        <search-bar></search-bar>
+        <search-bar v-model="searchQuery" />
 
         <!-- Filters (Right) -->
         <div class="d-flex align-center">
-          <v-menu v-for="filter in filters" :key="filter.label">
-            <template v-slot:activator="{ props }">
+          <v-menu>
+            <template #activator="{ props }">
               <v-btn
                 v-bind="props"
-                variant="text"
-                color="grey-lighten-1"
                 class="text-none font-weight-regular ml-2 px-2"
+                color="grey-lighten-1"
+                variant="text"
               >
-                {{ filter.label }}
+                {{ selectedGenreName || 'Category' }}
                 <v-icon end size="small">mdi-chevron-down</v-icon>
               </v-btn>
             </template>
             <v-list>
-              <v-list-item v-for="option in filter.options" :key="option" :value="option" link>
-                <v-list-item-title>{{ option }}</v-list-item-title>
-              </v-list-item>
+              <v-list-item
+                link
+                title="All Categories"
+                @click="selectedGenreId = null"
+              />
+              <v-list-item 
+                v-for="genre in genres" 
+                :key="genre.id" 
+                link 
+                :title="genre.name"
+                @click="selectedGenreId = genre.id"
+              />
             </v-list>
           </v-menu>
         </div>
       </div>
 
-      <!-- Blog Grid -->
+      <!-- Movies Grid -->
       <v-row>
         <v-col
-          v-for="movie in movies"
+          v-for="movie in displayMovies"
           :key="movie.id"
           cols="12"
           md="4"
@@ -84,8 +93,8 @@
 
                   <div class="d-flex align-center">
                     <v-icon
-                      color="yellow-darken-2"
                       class="mr-1"
+                      color="yellow-darken-2"
                       size="small"
                     >
                       mdi-star
@@ -108,26 +117,70 @@
 </template>
 
 <script setup>
-  import SearchBar from '@/components/searchBar.vue';
-import { ref, onMounted } from 'vue'
-import { getPopularMovies } from '@/services/api'
+  import { computed, onMounted, ref, watch } from 'vue'
+  import SearchBar from '@/components/searchBar.vue'
+  import { getGenres, getPopularMovies, searchMovies } from '@/services/api'
 
   const movies = ref([])
+  const genres = ref([])
+  const searchQuery = ref('')
+  const sortBy = ref('Most Popular')
+  const selectedGenreId = ref(null)
 
-  onMounted(async () => {
-    try {
-      movies.value = await getPopularMovies()
-    } catch (error) {
-      console.error('Error fetching movies:', error)
+  const sortOptions = ['Most Popular', 'Best Rating', 'Newest']
+
+  // Computed property for the filter/sort logic
+  const displayMovies = computed(() => {
+    let result = [...movies.value]
+
+    // Filter by Genre
+    if (selectedGenreId.value) {
+      result = result.filter(m => m.genreIds.includes(selectedGenreId.value))
     }
+
+    // Sort
+    if (sortBy.value === 'Best Rating') {
+      result.sort((a, b) => b.score - a.score)
+    } else if (sortBy.value === 'Newest') {
+      result.sort((a, b) => new Date(b.date) - new Date(a.date))
+    }
+    // 'Most Popular' is the API default, so no extra sort needed unless we want to manually sort by popularity score from API if we had it.
+
+    return result
   })
 
-  const sortOptions = ['Most Popular', 'Best Rating', 'Newest', 'Price: Low to High', 'Price: High to Low']
-  
-  const filters = [
-    { label: 'Category', options: ['Action', 'Comedy', 'Drama', 'Horror'] },
-    { label: 'Brand', options: ['Marvel', 'DC', 'Disney', 'Sony'] },
-  ]
+  const selectedGenreName = computed(() => {
+    if (!selectedGenreId.value) return null
+    return genres.value.find(g => g.id === selectedGenreId.value)?.name
+  })
+
+  const fetchMovies = async () => {
+    try {
+      if (searchQuery.value.trim()) {
+        movies.value = await searchMovies(searchQuery.value)
+      } else {
+        movies.value = await getPopularMovies()
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
+  // Watch search query to trigger API search (debounced slightly by behavior or user typing speed, typically)
+  let timeout
+  watch(searchQuery, () => {
+    clearTimeout(timeout)
+    timeout = setTimeout(fetchMovies, 500)
+  })
+
+  onMounted(async () => {
+    await fetchMovies()
+    try {
+      genres.value = await getGenres()
+    } catch (e) {
+      console.warn('Failed to load genres', e)
+    }
+  })
 </script>
 
 <style scoped>
