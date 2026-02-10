@@ -19,7 +19,7 @@
               Only for Movie Rating members.</p>
           </div>
 
-          <v-form @submit.prevent>
+          <v-form @submit.prevent="signin">
             <div class="mb-4">
               <label class="text-caption font-weight-medium text-grey-lighten-1 mb-1 d-block">Email address</label>
               <v-text-field
@@ -60,6 +60,7 @@
               rounded="lg"
               class="text-none font-weight-bold text-white mb-8"
               elevation="0"
+              type="submit"
             >
               Sign in
             </v-btn>
@@ -86,7 +87,25 @@
 </template>
 
 <script setup>
-//
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { auth } from '@/services/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+const email = ref(import.meta.env.VITE_ADMIN_EMAIL);
+const password = ref(import.meta.env.VITE_ADMIN_PASSWORD);
+const router = useRouter();
+
+const signin = async () => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+    console.log("Successfully signed in!", userCredential.user);
+    router.push('/dashboard');
+  } catch (error) {
+    console.error("Error signing in:", error.code, error.message);
+    alert("Failed to sign in: " + error.message);
+  }
+};
 </script>
 
 <style scoped>
