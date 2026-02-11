@@ -122,8 +122,9 @@
   import { computed, onMounted, ref, watch } from 'vue'
   import SearchBar from '@/components/searchBar.vue'
   import { getGenres, getPopularMovies, searchMovies } from '@/services/api'
-import Header from '@/layouts/Header.vue'
+
 import Footer from '@/layouts/Footer.vue'
+import Header from '@/layouts/Header.vue'
 
   const movies = ref([])
   const genres = ref([])

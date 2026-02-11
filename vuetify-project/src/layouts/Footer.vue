@@ -1,7 +1,7 @@
 <template>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"></link>
-  
-<v-footer class="bg-black d-flex flex-column">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+  <v-footer class="bg-black d-flex flex-column">
     <div class="bg-black d-flex w-100 align-center px-4">
       <strong class="text-h6">Get connected with us on social networks!</strong>
 
