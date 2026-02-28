@@ -23,6 +23,7 @@ const logout = async () => {
     <v-btn class="text-white text-uppercase font-weight-bold" to="/" variant="text">Home</v-btn>
     <v-btn class="text-white text-uppercase font-weight-bold" to="/Movies" variant="text">Movies</v-btn>
     <v-btn v-if="authStore.isAdmin" class="text-white text-uppercase font-weight-bold" to="/dashboard" variant="text">Dashboard</v-btn>
+    <v-btn v-if="!authStore.isAdmin" to="/register" color="red-accent-4">Login</v-btn>
     <v-btn v-if="authStore.isAdmin" color="red-accent-4" @click="logout">Logout</v-btn>
   </div>
 </template>
