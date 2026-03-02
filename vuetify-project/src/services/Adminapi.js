@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { pick } from 'vuetify/lib/util/helpers.mjs';
 
 const api = axios.create({
   baseURL: 'https://jsonplaceholder.typicode.com',
@@ -13,9 +12,9 @@ export const getStats = async () => {
   ]);
 
   return [
-    { title: 'Total Visitors', value: (users.data.length * 7189).toLocaleString() },
-    { title: 'Avg. Open Rate', value: '58.16%' },
-    { title: 'Avg. Click Rate', value: '24.57%' },
+    { title: 'Total Users', value: users.data.length.toString() },
+    { title: 'Total Posts', value: posts.data.length.toString() },
+    { title: 'Active Users', value: (Math.round(users.data.length * 0.8)).toString() }, // Example derived stat
   ];
 }
 
@@ -39,6 +38,8 @@ function Userinfo (user) {
     username: user.username,
     email: user.email,
     picture: `https://i.pravatar.cc/150?u=${user.id}`,
+    phone: user.phone,
+    website: user.website,
 
   }
 }

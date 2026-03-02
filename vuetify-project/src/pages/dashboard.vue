@@ -1,4 +1,3 @@
-
 <template>
   <Header />
 
@@ -44,42 +43,14 @@
                 alt="Avatar"
               />
             </v-avatar>
-            <div class="d-flex flex-column">
-              <span class="font-weight-bold text-body-2">{{ item.name }}</span>
-              <span class="text-caption text-medium-emphasis">{{ item.email }}</span>
-            </div>
+            <span class="font-weight-bold text-body-2">{{ item.name }}</span>
           </div>
-        </template>
-
-        <!-- Title Column -->
-        <template #item.title="{ item }">
-          <div class="d-flex flex-column">
-            <span class="text-body-2">{{ item.title }}</span>
-            <span class="text-caption text-medium-emphasis">{{ item.department }}</span>
-          </div>
-        </template>
-
-        <!-- Status Column -->
-        <template #item.status="{ item }">
-          <v-chip
-            class="font-weight-medium"
-            color="success"
-            size="small"
-            variant="tonal"
-          >
-            {{ item.status }}
-          </v-chip>
-        </template>
-
-        <!-- Role Column -->
-        <template #item.role="{ item }">
-          <span class="text-body-2 text-medium-emphasis">{{ item.role }}</span>
         </template>
 
         <!-- Actions Column -->
         <template #item.actions>
           <a
-            class="text-decoration-none text-primary font-weight-bold text-body-2"
+            class="text-decoration-none text-white font-weight-bold text-body-2"
             href="#"
           >Edit</a>
         </template>
@@ -98,20 +69,14 @@
 
   const headers = [
     { title: 'Name', key: 'name', align: 'start', sortable: false },
-    { title: 'Title', key: 'title', align: 'start', sortable: false },
-    { title: 'Status', key: 'status', align: 'start', sortable: false },
-    { title: 'Role', key: 'role', align: 'start', sortable: false },
-    { title: '', key: 'actions', align: 'end', sortable: false },
+    { title: 'Email', key: 'email', align: 'start', sortable: false },
+    { title: 'Phone', key: 'phone', align: 'start', sortable: false },
+    { title: 'Website', key: 'website', align: 'start', sortable: false },
+    { title: 'Actions', key: 'actions', align: 'start', sortable: false },
   ]
 
-  const stats = ref([
-    { title: 'Total Visitors', value: '-' },
-    { title: 'Avg. Open Rate', value: '-' },
-    { title: 'Avg. Click Rate', value: '-' },
-  ])
-
   const people = ref([])
-
+  const stats = ref({})
   onMounted(async () => {
     try {
       const [statsData, usersData] = await Promise.all([
@@ -119,24 +84,9 @@
         getUsers(),
       ])
       stats.value = statsData
-
-      // Transform API users to match the UI requirements
-      // Assuming usersData comes from JSONPlaceholder via Adminapi.js
-      // We add mock Title, Status, and Role fields
-      const roles = ['Member', 'Admin', 'Owner']
-      const departments = ['Engineering', 'Design', 'Product', 'Marketing']
-
-      people.value = usersData.map(user => ({
-        ...user,
-        // Mock data for missing fields
-        title: 'Front-end Developer', // Placeholder, ideally from API
-        department: departments[Math.floor(Math.random() * departments.length)],
-        status: 'Active',
-        role: roles[Math.floor(Math.random() * roles.length)],
-      }))
-
+      people.value = usersData
     } catch (error) {
-      console.error('Error fetching dashboard data:', error)
+      console.error('Error fetching data:', error)
     }
   })
 </script>
