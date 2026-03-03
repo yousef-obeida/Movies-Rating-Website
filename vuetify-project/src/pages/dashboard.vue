@@ -50,9 +50,28 @@
         <!-- Actions Column -->
         <template #item.actions>
           <a
-            class="text-decoration-none text-white font-weight-bold text-body-2"
+            class="text-decoration-none"
             href="#"
-          >Edit</a>
+          >
+            <v-icon
+              class="me-2"
+              color="blue-accent-4"
+              size="small"
+            >
+              mdi-pencil
+            </v-icon>
+          </a>
+          <a
+            class="text-decoration-none"
+            href="#"
+          >
+            <v-icon
+              color="red-accent-4"
+              size="small"
+            >
+              mdi-delete
+            </v-icon>
+          </a>
         </template>
 
         <!-- Bottom slot to hide default pagination if needed, or customize -->
@@ -69,10 +88,10 @@
 
   const headers = [
     { title: 'Name', key: 'name', align: 'start', sortable: false },
-    { title: 'Email', key: 'email', align: 'start', sortable: false },
-    { title: 'Phone', key: 'phone', align: 'start', sortable: false },
-    { title: 'Website', key: 'website', align: 'start', sortable: false },
-    { title: 'Actions', key: 'actions', align: 'start', sortable: false },
+    { title: 'Email', key: 'email', align: 'middle', sortable: false },
+    { title: 'Phone', key: 'phone', align: 'middle', sortable: false },
+    { title: 'Website', key: 'website', align: 'middle', sortable: false },
+    { title: 'Actions', key: 'actions', align: 'middle', sortable: false },
   ]
 
   const people = ref([])
